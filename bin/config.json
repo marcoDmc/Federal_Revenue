@@ -1,0 +1,11 @@
+{
+    "BOT": {
+        "URL": "https://servicos.receita.fazenda.gov.br/servicos/cpf/consultasituacao/ConsultaPublica.asp?Error=5",
+        "CPFS": [
+            "17978049795"
+        ],
+        "DATES": [
+            "11081995"
+        ]
+    }
+}
