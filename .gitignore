@@ -20,6 +20,7 @@ ENV/
 
 # VS Code
 .vscode/
+bin
 
 # Logs
 *.log
