@@ -1,0 +1,11 @@
+{
+    "BOT": {
+        "URL": "https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublica.asp",
+        "DOC_URL":"https://servicos.receita.fazenda.gov.br/Servicos/CPF/ConsultaSituacao/ConsultaPublicaExibir.asp",
+        "CPFS": [
+        ],
+        "DATES": [
+  
+        ]
+    }
+}
