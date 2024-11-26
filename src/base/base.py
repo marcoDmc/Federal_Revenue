@@ -1,11 +1,12 @@
 from selenium import webdriver
-from selenium.webdriver import ChromeOptions
-from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
 from ..utils.utils import *
 import json, time, pyautogui
-from selenium.common.exceptions import TimeoutException
 
 
 
@@ -18,8 +19,10 @@ class Bot:
         self.CPFS = self.config["BOT"]["CPFS"]
         self.DATES = self.config["BOT"]["DATES"]
         self.DOC = self.config["BOT"]["DOC_URL"]
-        self.OPTIONS = ChromeOptions()
-        self.DRIVER = webdriver.Chrome(options=self.OPTIONS)
+        self.OPTIONS = Options()
+        self.OPTIONS.add_argument('--no-sandbox')
+        self.SERVICE = Service(ChromeDriverManager().install())
+        self.DRIVER = webdriver.Chrome(service=self.SERVICE, options=self.OPTIONS)
         self.DRIVER.maximize_window()
         
     def receive_value_ainserts_in_field(self, locator, path, value):
