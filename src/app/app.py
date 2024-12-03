@@ -4,7 +4,6 @@ from src.app.app import *
 from selenium.webdriver.common.by import By
 import logging
 
-# Configuração de logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -17,17 +16,17 @@ class RobotClass(Bot):
 
         logging.info("Inicializando o robô...")
 
+        
+
         try:
             self.DRIVER.get(self.URL)
             logging.info(f"Acessando URL: {self.URL}")
         except Exception as e:
             logging.error(f"Erro ao acessar URL: {e}")
             self.DRIVER.quit()
-            input("Pressione Enter para encerrar...")
             raise
 
         count = 0
-
         while True:
             try:
                 if len(self.CPFS) > count and len(self.DATES) > count:
@@ -45,11 +44,11 @@ class RobotClass(Bot):
                     logging.info(f"Processando CPF: {cpf} e Data: {date}")
 
                     Sleeping(2)
-                    self.receive_value_ainserts_in_field(locator=By.XPATH, path='//*[@id="txtCPF"]', value=cpf)
+                    self.receive_value_and_insert_in_field(locator=By.XPATH, path='//*[@id="txtCPF"]', value=cpf)
                     logging.info("CPF inserido no campo.")
 
                     Sleeping(2)
-                    self.receive_value_ainserts_in_field(locator=By.XPATH, path='//*[@id="txtDataNascimento"]', value=date)
+                    self.receive_value_and_insert_in_field(locator=By.XPATH, path='//*[@id="txtDataNascimento"]', value=date)
                     logging.info("Data de nascimento inserida no campo.")
 
                     Sleeping(2)
@@ -95,7 +94,5 @@ class RobotClass(Bot):
                 break
             except Exception as e:
                 logging.error(f"Erro durante a execução: {str(e)}")
-                input("Erro detectado. Pressione Enter para continuar...")
         self.DRIVER.quit()
         logging.info("Execução do robô encerrada.")
-        input("Pressione Enter para encerrar...")
