@@ -6,9 +6,13 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from ..utils.utils import *
-import json, time, pyautogui
+import json, time, pyautogui, logging
 
-
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler("bot.log"), logging.StreamHandler()],
+)
 
 class Bot:
     def __init__(self):
@@ -19,75 +23,67 @@ class Bot:
         self.CPFS = self.config["BOT"]["CPFS"]
         self.DATES = self.config["BOT"]["DATES"]
         self.DOC = self.config["BOT"]["DOC_URL"]
+
         self.OPTIONS = Options()
         self.OPTIONS.add_argument('--no-sandbox')
+
         self.SERVICE = Service(ChromeDriverManager().install())
         self.DRIVER = webdriver.Chrome(service=self.SERVICE, options=self.OPTIONS)
         self.DRIVER.maximize_window()
-        
-    def receive_value_ainserts_in_field(self, locator, path, value):
+
+    def receive_value_and_insert_in_field(self, locator, path, value):
         wait = WebDriverWait(self.DRIVER, 2)
         wait.until(EC.presence_of_element_located((locator, path))).send_keys(value)
-            
+
     def searching_for_element(self, locator, path):
         wait = WebDriverWait(self.DRIVER, 2)
-        captchaFrame = wait.until(EC.visibility_of_element_located((locator, path)))
-        return captchaFrame
+        return wait.until(EC.visibility_of_element_located((locator, path)))
 
     def searching_for_elements(self, locator, path):
         try:
             wait = WebDriverWait(self.DRIVER, 2)
-            elements = wait.until(EC.visibility_of_all_elements_located((locator, path)))
-            return elements
-        except TimeoutException as e:
-            print(f"Timeout when searching for elements: {path}")
+            return wait.until(EC.visibility_of_all_elements_located((locator, path)))
+        except TimeoutException:
+            logging.error(f"Timeout when searching for elements: {path}")
             return []
-        
+
     def looking_for_element_from_within(self, element, locator, path):
         return element.find_element(locator, path)
 
     def looking_for_all_elements_from_within(self, element, locator, path):
         return element.find_elements(locator, path)
-    
-    def change_context(self,context=None,activate=True):
+
+    def change_context(self, context=None, activate=True):
         if activate:
-            return self.DRIVER.switch_to.frame(context)
+            self.DRIVER.switch_to.frame(context)
         else:
-            return self.DRIVER.switch_to.default_content()
-    
+            self.DRIVER.switch_to.default_content()
+
     def receives_element_and_clicks(self, element, sleep):
         time.sleep(sleep)
         element.click()
-        
-    def print_file(self,element):
-        #criando pasta para armazenar os arquivos
+
+    def print_file(self, element):
+        pyautogui.FAILSAFE = False
         CreateFolder(name='Downloads')
         Sleeping(10)
-        
-        #comando para imprimir documento
+
         pyautogui.hotkey('ctrl', 'p')
-        Sleeping(2)  
+        Sleeping(2)
         pyautogui.press('enter')
         Sleeping(5)
-        
-        #inserindo caminho da pasta
-        pyautogui.hotkey('ctrl','l')
+
+        pyautogui.hotkey('ctrl', 'l')
         pyautogui.write('C:/Downloads', interval=0.10)
         pyautogui.press('enter')
         Sleeping(2)
         PressKeyTimes(7)
-        
-        
+
         filename = str(element.text).split(":")[1].lower()
-        
-        #gerando numeros aleatorios para evitar problemas de nome
-        #de arquivos iguais
         number = GenerateNumber()
-        
-        #inserindo nome de arquivo
+
         pyautogui.typewrite(f'{filename}-{number}', interval=0.10)
         pyautogui.press('enter')
         Sleeping(5)
-        
+
         self.DRIVER.back()
-        
